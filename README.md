@@ -1,198 +1,92 @@
-# 🧊 TundrAI – Documentation Chatbot Project
+# 🧊 TundrAI
 
-## 🧭 Project Overview
+> **AI-powered documentation chatbot** - Fully open-source, self-hosted RAG solution
 
-TundrAI is a **fully open-source, self-hosted AI-powered chatbot** that answers user questions based on documentation content. It will be written in **TypeScript**, with a **React frontend** and a **Node.js backend**, and will use a **self-hosted inference server running open-source LLMs**.
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](https://www.docker.com/)
 
-While the primary use case is to support a specific software product, the project is designed to be **documentation-agnostic** — it should work with any set of supported documents and can be used across different software projects or use cases.
+TundrAI transforms your documentation into an intelligent chatbot that can answer questions, provide guidance, and help users navigate your content using advanced RAG (Retrieval-Augmented Generation) technology.
 
-TundrAI will be developed and published on the creator's personal GitHub account, and when mature, will be offered to the company for internal integration. and, when mature, will be offered to the company for internal integration.
+## 🚀 Quick Start
 
----
+```bash
+# 1. Clone the deployment repository
+git clone https://github.com/TundrAI/tundrai-deploy.git
+cd tundrai-deploy
 
-## 🔧 Tech Stack
-
-| Layer        | Technology              |                         |
-| ------------ | ----------------------- | ----------------------- |
-| Frontend     | React                   |                         |
-| Backend      | NestJS + TypeScript     |                         |
-| Inference    | Ollama (or similar)     |                         |
-| Embeddings   | sentence-transformers   |                         |
-| Vector Store | Qdrant or Chroma        |                         |
-| Container    | Docker + Docker Compose | Docker + Docker Compose |
-
-Kubernetes readiness is a goal, but Kubernetes configuration will not be included in this version.
-
----
-
-## 🧠 Core Workflow
-
-### Step 1: Ingest Documentation
-
-* Supported formats: **PDF**, **Markdown**, **HTML**, and **plain text**
-* Documents are parsed and split into chunks
-* Chunks are embedded (converted into numerical vectors)
-* Embeddings are stored in a vector database (e.g., Qdrant)
-
-### Step 2: Handle User Questions
-
-* User types a question in the chat UI
-* The backend embeds the question
-* The vector DB retrieves the most similar chunks from the docs
-
-### Step 3: Generate Answer
-
-* The backend builds a prompt using the question + top document chunks
-* The prompt is sent to a local inference server (LLM)
-* The answer is returned to the user
-
----
-
-## 📂 Document Ingestion Workflow
-
-* All documentation files to be processed are placed in a dedicated directory, e.g., `./data/docs/`
-* This path is configurable via `.env`, e.g., `DOCS_FOLDER_PATH=./data/docs/`
-* A `POST /ingest` API endpoint is exposed by the backend
-* When called, it scans the folder, parses the documents, generates embeddings, and indexes them into the vector DB
-* Optional: A `?refresh=true` query param can trigger a full re-ingestion
-
-### Versioning
-
-* Document versioning via Git
-* We might store the documentation in a separate Git repo and mount or sync it into the `data/docs/` folder
-* This allows change tracking and enables automated re-ingestion on updates via hooks or pipelines
-
----
-
-## 🧰 Components & Microservices
-
-* `frontend/`: React-based UI
-* `backend/`: NestJS API
-* `inference-server/`: Containerized LLM (e.g., via Ollama)
-* `vector-db/`: Qdrant or equivalent
-
----
-
-## 🔐 Authentication & Access
-
-* User authentication is **configurable**
-* Chatbot can be used **publicly or privately**, depending on a setting in a `.env` or config file
-
----
-
-## 🌍 Language Support
-
-* MVP will support **English and French**
-* Future support for additional languages is planned
-
----
-
-## ⚙️ Configuration & Admin Controls
-
-* MVP: Admin settings via `.env` or config files
-* Future: Web-based admin panel to manage:
-
-  * Document ingestion
-  * Chat behavior (strict RAG or general answers)
-  * Language settings
-  * Logs and analytics
-
----
-
-## ⚙️ Prompt Behavior (RAG Mode)
-
-* The chatbot's behavior can be set to:
-
-  * **Strict RAG** (only answer from docs)
-  * **Fallback Mode** (try to generalize if no answer is found)
-* This is configurable via `.env` or future admin UI
-
----
-
-## 🗂️ Deployment
-
-* Fully Dockerized with a `docker-compose.yml`
-* No GitLab CI/CD or Kubernetes config included, but future integration with Azure is planned
-
----
-
-## 🧩 Architecture Diagrams
-
-### High-Level Architecture
-
-```
-+-------------+     HTTPS     +--------------+     gRPC/HTTP     +-------------------+
-|             | ------------> |              | ---------------> |                   |
-|   Frontend  |               |   Backend    |                  |  Inference Server |
-| (React App) | <------------ | (Node/TS)    | <--------------- | (Ollama + Model)  |
-|             |     API       |              |     LLM Output   |                   |
-+-------------+               +--------------+                  +-------------------+
-                                    |
-                                    | Embedding & Search
-                                    v
-                            +---------------+
-                            | Vector DB     |
-                            | (Qdrant etc.) |
-                            +---------------+
+# 2. Start with Docker Compose (that's it!)
+docker-compose up -d
 ```
 
-### RAG Flow
+**📍 Access:** Open http://localhost:3000 and start chatting with your docs!
 
+## 🏗️ Architecture
+
+TundrAI consists of **4 specialized services** working together:
+
+| Service | Repository | Description |
+|---------|------------|-------------|
+| 🎨 **Frontend** | [`tundrai-frontend`](https://github.com/TundrAI/tundrai-frontend) | React + TypeScript chat interface |
+| ⚡ **Backend** | [`tundrai-backend`](https://github.com/TundrAI/tundrai-backend) | NestJS API with RAG logic |
+| 🤖 **Inference** | [`tundrai-inference`](https://github.com/TundrAI/tundrai-inference) | Ollama LLM server setup |
+| 🐳 **Deployment** | [`tundrai-deploy`](https://github.com/TundrAI/tundrai-deploy) | Docker orchestration & configs |
+
+### System Flow
 ```
-        [User] Asks: "How do I reset my password?"
-               |
-               v
-      +------------------+
-      |     Backend      |
-      +------------------+
-               |
-               | Generate question embedding
-               v
-      +------------------+
-      |   Embedding Model|
-      +------------------+
-               |
-               | Search in vector DB
-               v
-      +------------------+
-      |   Vector DB       |
-      +------------------+
-               |
-               | Return top-k document chunks
-               v
-      +--------------------------+
-      | Build prompt w/ context |
-      +--------------------------+
-               |
-               | Send prompt
-               v
-      +----------------------+
-      |  LLM Inference Server|
-      +----------------------+
-               |
-               | AI Answer
-               v
-           [Frontend UI]
+Documents → Vector DB → LLM → Smart Answers
+    ↓           ↓         ↓         ↓
+   PDF,MD    Qdrant    Ollama   React UI
 ```
+
+## ✨ Key Features
+
+- **🔒 Self-Hosted**: Complete control over your data and infrastructure
+- **📚 Multi-Format**: PDF, Markdown, HTML, and plain text support
+- **🌍 Multilingual**: English and French support (more languages planned)
+- **🎯 Smart RAG**: Context-aware answers from your documentation
+- **🐳 Docker-First**: One command deployment with docker-compose
+- **⚙️ Configurable**: Strict RAG mode or general AI assistance
+- **🔐 Flexible Auth**: Public or private deployment options
+
+## 📖 Documentation
+
+| Topic | Link |
+|-------|------|
+| **Architecture Overview** | [docs/architecture/](docs/architecture/) |
+| **Deployment Guide** | [Deployment Repo](https://github.com/TundrAI/tundrai-deploy) |
+| **API Reference** | [docs/api/](docs/api/) |
+| **Development Setup** | [docs/development/](docs/development/) |
+
+## 🗺️ Project Status
+
+**Current Version:** `v0.1.0-alpha`
+
+**Development Roadmap:** [planning/roadmap/](planning/roadmap/)
+
+**Active Milestones:** [planning/milestones/](planning/milestones/)
+
+## 🤝 Contributing
+
+We welcome contributions! Each service repository has its own contribution guidelines:
+
+- **Issues & Discussions**: Use this main repository for project-wide discussions
+- **Feature Requests**: Submit in the relevant service repository
+- **Bug Reports**: Report in the specific service repository
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## 🏢 Enterprise Ready
+
+TundrAI is designed for professional deployment and can be easily integrated into existing infrastructure. Perfect for:
+
+- Internal documentation portals
+- Customer support systems  
+- Knowledge base enhancement
+- Developer documentation assistance
 
 ---
 
-## 🚧 MVP Scope
-
-* Ingest PDFs, Markdown, HTML, and text
-* English and French support
-* Answer user questions using RAG
-* Basic `.env`/config-based setup
-* Dockerized deployment
-
----
-
-## 🎯 Future Enhancements
-
-* Admin web panel
-* Realtime logging and feedback loop
-* Multi-user support and roles
-* Analytics dashboard
-* DOCX and EPUB support
-* Automatic re-ingestion on file change
-* Azure deployment pipelines
+**⭐ Star this project** if you find it useful and **watch** for updates!
