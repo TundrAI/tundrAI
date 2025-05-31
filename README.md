@@ -26,7 +26,7 @@ TundrAI will be developed and published on the creator's personal GitHub account
 
 **Current Progress:**
 - ✅ Issue #1: NestJS project setup with development tooling (Completed: May 31, 2025)
-- 🎯 Issue #2: PostgreSQL + TypeORM + User entity setup (In Progress)
+- 🎯 Issue #2: Configure testing infrastructure with 100% coverage (In Progress)
 
 **Why Multi-Repo:**
 - Clean service boundaries and independent development
@@ -65,20 +65,21 @@ React UI ↔ NestJS API ↔ PostgreSQL (conversations)
 **Timeline:** 12-16 weeks total, ~10 hours/week, solo development  
 **Target:** Company demo in ~8 weeks, Enterprise ready in ~16 weeks
 
-### **Milestone 1: Backend Core** ⚡ (Weeks 1-4, ~40h) - 9 Issues
-**Status: 🎯 IN PROGRESS - Issue #2 of 9**
+### **Milestone 1: Backend Core** ⚡ (Weeks 1-4, ~40h) - 8 Issues
+**Status: 🎯 IN PROGRESS - Issue #2 of 8**
 
 **Backend Foundation & RAG Pipeline**
 - ✅ Repository architecture decisions
 - ✅ Technical architecture decisions
 - ✅ **COMPLETED:** NestJS project setup with development tooling (May 31, 2025)
-- 🎯 **CURRENT:** PostgreSQL + TypeORM + User entity setup
-- ⏳ JWT authentication with Passport implementation
-- ⏳ Document ingestion pipeline (PDF, MD, HTML, TXT parsing)  
-- ⏳ Vector database integration (Qdrant setup and configuration)
-- ⏳ Ollama LLM integration and prompt management
-- ⏳ Core chat API endpoints with conversation memory
-- ⏳ Testing infrastructure with 100% coverage requirement
+- 🎯 **CURRENT:** Configure testing infrastructure with 100% coverage
+- ⏳ Set up PostgreSQL + TypeORM with User entity
+- ⏳ Implement JWT + Passport authentication system
+- ⏳ Implement document ingestion pipeline (PDF, MD parsing)
+- ⏳ Integrate Qdrant vector database
+- ⏳ Implement Ollama LLM integration
+- ⏳ Create core chat API endpoints
+- ⏳ Implement conversation memory and persistence
 
 **Success Criteria:** Complete chatbot backend that can ingest documents, authenticate users, and provide intelligent answers with conversation memory
 
@@ -307,14 +308,14 @@ services:
 - ✅ **Development environment running** (Docker Compose)
 - ✅ **Issue organization completed** (Priority fields + component labels)
 - ✅ **NestJS backend initialized** with TypeScript, ESLint, Prettier
-- 🎯 **CURRENT: PostgreSQL + TypeORM + User entity setup** (Issue #2)
+- 🎯 **CURRENT: Testing infrastructure with 100% coverage** (Issue #2)
 
 ### **Development Approach**
 - **Solo development** initially
 - **Backend-first strategy** (core RAG logic)
 - **Docker-first development** ✅ (bind mounts for hot reload working)
 - **API-driven development** (validate with curl/Postman before UI)
-- **Database-first approach** (PostgreSQL + Auth setup in progress)
+- **Database-first approach** (PostgreSQL ready, TypeORM setup pending)
 - **100% test coverage** (Jest configured and ready)
 - **Step-by-step implementation** (proven successful in Issue #1)
 
@@ -331,12 +332,15 @@ services:
 - **Husky + lint-staged** for pre-commit quality checks ✅
 
 ### **Implementation Order**
-1. ✅ **NestJS Project Setup**: Development tooling, ESLint, Prettier, testing infrastructure
-2. 🎯 **Database Setup**: PostgreSQL + TypeORM + User entities
-3. ⏳ **Authentication**: JWT + Passport + Auth guards
-4. ⏳ **Core RAG Pipeline**: Document processing + Qdrant + Ollama
-5. ⏳ **Conversation System**: Message persistence + context handling
-6. ⏳ **API Endpoints**: Chat, document upload, user management
+1. ✅ **NestJS Project Setup**: Development tooling, ESLint, Prettier, pre-commit hooks
+2. 🎯 **Testing Infrastructure**: Jest configuration, coverage reports, test database
+3. ⏳ **Database Setup**: PostgreSQL + TypeORM + User entities
+4. ⏳ **Authentication**: JWT + Passport + Auth guards
+5. ⏳ **Document Ingestion**: PDF, MD parsing pipeline
+6. ⏳ **Vector Database**: Qdrant integration
+7. ⏳ **LLM Integration**: Ollama setup and prompt management
+8. ⏳ **Chat API**: Core endpoints with conversation memory
+9. ⏳ **Conversation Persistence**: Message history and context handling
 
 ---
 
